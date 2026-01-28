@@ -1,16 +1,44 @@
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { LayoutDashboard, MessageSquare, Settings, LogOut, Loader2 } from 'lucide-react';
 
 const AdminSidebar = () => {
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Feedback', path: '/admin/feedback', icon: MessageSquare },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    window.location.href = '/admin/login';
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    
+    if (isLoggingOut) return; // Prevent double-click
+    
+    setIsLoggingOut(true);
+    
+    try {
+      // TODO: Call logout API when Laravel backend is ready
+      // await authAPI.logout();
+      
+      // Clear any stored auth tokens
+      localStorage.removeItem('auth_token');
+      sessionStorage.removeItem('auth_token');
+      
+      // Small delay for UX feedback
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Navigate to login page
+      navigate('/admin/login', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still navigate to login even if API call fails
+      navigate('/admin/login', { replace: true });
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -55,10 +83,20 @@ const AdminSidebar = () => {
       <div className="p-4 border-t border-neutral-lightGray">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-neutral-slate hover:bg-red-50 hover:text-red-600 transition-colors w-full"
+          disabled={isLoggingOut}
+          className="flex items-center justify-center gap-3 px-4 py-3 rounded-lg font-medium text-neutral-slate hover:bg-red-50 hover:text-red-600 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LogOut className="w-5 h-5" />
-          Logout
+          {isLoggingOut ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Logging out...
+            </>
+          ) : (
+            <>
+              <LogOut className="w-5 h-5" />
+              Logout
+            </>
+          )}
         </button>
       </div>
     </aside>
