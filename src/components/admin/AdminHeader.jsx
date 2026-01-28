@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, User, X, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Bell, User, X, LogOut, Settings, ChevronDown, Menu } from 'lucide-react';
 
-const AdminHeader = () => {
+const AdminHeader = ({ onMenuToggle }) => {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -51,12 +51,20 @@ const AdminHeader = () => {
   };
 
   return (
-    <header className="bg-white border-b border-neutral-lightGray px-6 py-4">
+    <header className="bg-white border-b border-neutral-lightGray px-4 md:px-6 py-4">
       <div className="flex items-center justify-between">
-        {/* Page Title Area - can be dynamic */}
-        <div>
-          <p className="text-sm text-neutral-slate">Welcome back,</p>
-          <h2 className="text-lg font-semibold text-primary-dark">Administrator</h2>
+        {/* Mobile Menu Button & Page Title */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onMenuToggle}
+            className="md:hidden p-2 rounded-lg hover:bg-neutral-offWhite transition-colors"
+          >
+            <Menu className="w-6 h-6 text-primary-dark" />
+          </button>
+          <div>
+            <p className="text-sm text-neutral-slate">Welcome back,</p>
+            <h2 className="text-lg font-semibold text-primary-dark">Administrator</h2>
+          </div>
         </div>
 
         {/* Right Side Actions */}

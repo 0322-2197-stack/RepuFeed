@@ -6,6 +6,10 @@ import AdminHeader from '../components/admin/AdminHeader';
 const AdminLayout = () => {
   // Mock authentication state - replace with actual auth logic
   const [isAuthenticated] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
@@ -13,10 +17,10 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen flex bg-neutral-offWhite">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col">
-        <AdminHeader />
-        <main className="flex-grow p-6">
+      <AdminSidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      <div className="flex-1 flex flex-col min-w-0">
+        <AdminHeader onMenuToggle={toggleSidebar} />
+        <main className="flex-grow p-4 md:p-6">
           <Outlet />
         </main>
       </div>

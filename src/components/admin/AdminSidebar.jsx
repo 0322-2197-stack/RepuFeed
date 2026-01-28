@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { LayoutDashboard, MessageSquare, Settings, LogOut, Loader2 } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Settings, LogOut, Loader2, X } from 'lucide-react';
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -42,10 +42,21 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-neutral-lightGray min-h-screen flex flex-col">
-      {/* Logo */}
-      <div className="p-6 border-b border-neutral-lightGray">
-        <a href="/admin/dashboard" className="flex items-center space-x-2">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-lightGray min-h-screen flex flex-col transform transition-transform duration-300 ease-in-out ${
+        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}>
+        {/* Logo */}
+        <div className="p-6 border-b border-neutral-lightGray flex items-center justify-between">
+          <a href="/admin/dashboard" className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-primary-orange rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-xl">R</span>
           </div>
@@ -54,6 +65,13 @@ const AdminSidebar = () => {
             <span className="text-neutral-slate text-xs">Admin Portal</span>
           </div>
         </a>
+        {/* Mobile Close Button */}
+        <button
+          onClick={onClose}
+          className="md:hidden p-2 rounded-lg hover:bg-neutral-offWhite transition-colors"
+        >
+          <X className="w-5 h-5 text-neutral-slate" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -63,6 +81,7 @@ const AdminSidebar = () => {
             <li key={item.path}>
               <NavLink
                 to={item.path}
+                onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
                     isActive
@@ -100,6 +119,7 @@ const AdminSidebar = () => {
         </button>
       </div>
     </aside>
+    </>
   );
 };
 
